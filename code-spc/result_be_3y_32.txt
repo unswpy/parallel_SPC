@@ -1,0 +1,51 @@
+compile completed, u_index and u_query are generated.\n
+data 1 SPC index constructing
+test 
+graph file: graph/be.txt
+label file: label/be.txt
+ordering: degree
+numer of threads is 32
+opt_shell: y
+opt_equiv: y
+opt_local: y
+1 threads in total 
+test
+32 threads in build function 
+shell reduction triggered
+shell reduction: 55435 (0.0697094)
+equiv reduction triggered
+equiv reduction #1: 285354 (0.358832)
+equiv reduction #2: 38473 (0.0483797)
+equiv reduction total: 323827 (0.407212)
+end of init 1
+end of init 2
+end of init 3
+degree-based ordering
+2time for init ms6137.54
+n is 795230
+be.txt
+data 1 SPC querying
+label file name: label/be.txt
+query file anme: query/be.txt
+answer file name: answer/be.txt
+total # of label entries: 44436082
+total # of dlabels: 11850074
+total # of clabels: 32586008
+shell reduction triggered
+equiv reduction triggered
+ind-set reduction triggered
+labels not merged.
+index read
+enter the valid bfs queries function
+0
+1000
+2000
+3000
+4000
+5000
+6000
+7000
+8000
+9000
+-----------------------------------------------------
+All done.

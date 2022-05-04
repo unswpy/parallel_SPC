@@ -1,0 +1,35 @@
+compile completed, u_index and u_query are generated.\n
+data 1 SPC index constructing baseline
+test 
+graph file: graph/pe.txt
+label file: label/pe.txt
+ordering: sigpath
+numer of threads is 1
+opt_shell: y
+opt_equiv: y
+opt_local: y
+1 threads in total 
+shell reduction triggered
+shell reduction: 32613 (0.0395901)
+equiv reduction triggered
+equiv reduction #1: 225700 (0.273986)
+equiv reduction #2: 80081 (0.0972133)
+equiv reduction total: 305781 (0.371199)
+significant-path-based ordering
+index construction costs 45063785.447126 ms
+total # of label entries: 1314763949
+pe.txt
+data 1 SPC querying baseline
+label file name: label/pe.txt
+query file anme: query/pe.txt
+answer file name: answer/pe.txt
+total # of label entries: 1314763949
+total # of dlabels: 119686568
+total # of clabels: 1195077381
+shell reduction triggered
+equiv reduction triggered
+ind-set reduction triggered
+labels not merged.
+index read
+-----------------------------------------------------
+All done.

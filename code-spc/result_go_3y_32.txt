@@ -1,0 +1,52 @@
+compile completed, u_index and u_query are generated.\n
+data 1 SPC index constructing
+test 
+graph file: graph/go.txt
+label file: label/go.txt
+ordering: degree
+numer of threads is 32
+opt_shell: y
+opt_equiv: y
+opt_local: y
+1 threads in total 
+test
+32 threads in build function 
+shell reduction triggered
+shell reduction: 161951 (0.086341)
+equiv reduction triggered
+equiv reduction #1: 1159287 (0.618051)
+equiv reduction #2: 81142 (0.0432593)
+equiv reduction total: 1240429 (0.661311)
+end of init 1
+end of init 2
+end of init 3
+degree-based ordering
+2time for init ms7431.47
+n is 1875713
+d is 20 at the early stop
+time for update the in and out vectors ms8610.04
+time for d=1 ms8589.88
+time for queryTime ms 0.001423
+time for erase  ms 0.001423
+time for insert candidate  ms 0.001423
+32 threads in total
+512600984 is the number of Distance calls
+index construction costs 315270.435785 ms
+total # of label entries: 211083564
+go.txt
+data 1 SPC querying
+label file name: label/go.txt
+query file anme: query/go.txt
+answer file name: answer/go.txt
+total # of label entries: 211083564
+total # of dlabels: 41697652
+total # of clabels: 169385912
+shell reduction triggered
+equiv reduction triggered
+ind-set reduction triggered
+labels not merged.
+index read
+enter the valid bfs queries function
+0
+-----------------------------------------------------
+All done.

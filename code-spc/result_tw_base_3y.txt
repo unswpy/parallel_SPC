@@ -1,0 +1,16 @@
+compile completed, u_index and u_query are generated.\n
+data 1 SPC index constructing baseline
+test 
+graph file: graph/tw.txt
+label file: label/tw.txt
+ordering: sigpath
+numer of threads is 1
+opt_shell: y
+opt_equiv: y
+opt_local: y
+[1;31mASSERT[0m, LINE:46, FILE:u_label.h
+[1;32mINFO[0m: too many vertices: 61652230
+tw.txt
+data 1 SPC querying baseline
+-----------------------------------------------------
+All done.

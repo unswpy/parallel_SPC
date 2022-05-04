@@ -1,0 +1,6 @@
+compile completed, u_index and u_query are generated.\n
+data 1 SPC index constructing baseline
+fl.txt
+data 1 SPC querying baseline
+-----------------------------------------------------
+All done.

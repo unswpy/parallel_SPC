@@ -1,0 +1,15 @@
+compile completed, u_index and u_query are generated.\n
+data 1 SPC index constructing
+test 
+graph file: graph/db.txt
+label file: label/db.txt
+ordering: degree
+numer of threads is 32
+opt_shell: y
+opt_equiv: y
+opt_local: y
+[1;31mASSERT[0m, LINE:26, FILE:u_io.cc
+db.txt
+data 1 SPC querying
+-----------------------------------------------------
+All done.

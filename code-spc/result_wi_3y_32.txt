@@ -1,0 +1,65 @@
+compile completed, u_index and u_query are generated.\n
+data 1 SPC index constructing
+test 
+graph file: graph/wi.txt
+label file: label/wi.txt
+ordering: degree
+numer of threads is 32
+opt_shell: y
+opt_equiv: y
+opt_local: y
+1 threads in total 
+test
+32 threads in build function 
+shell reduction triggered
+shell reduction: 26892 (0.194728)
+equiv reduction triggered
+equiv reduction #1: 26771 (0.193852)
+equiv reduction #2: 1859 (0.0134613)
+equiv reduction total: 28630 (0.207314)
+end of init 1
+end of init 2
+end of init 3
+degree-based ordering
+2time for init ms1142.73
+n is 138100
+d is 9 at the early stop
+time for update the in and out vectors ms1437.02
+time for d=1 ms7357.42
+time for queryTime ms 0.000785
+time for erase  ms 0.000785
+time for insert candidate  ms 0.000785
+32 threads in total
+177513760 is the number of Distance calls
+index construction costs 147401.079301 ms
+total # of label entries: 50876488
+wi.txt
+data 1 SPC querying
+label file name: label/wi.txt
+query file anme: query/wi.txt
+answer file name: answer/wi.txt
+total # of label entries: 50876488
+total # of dlabels: 4647248
+total # of clabels: 46229240
+shell reduction triggered
+equiv reduction triggered
+ind-set reduction triggered
+labels not merged.
+index read
+enter the valid bfs queries function
+0
+1000
+error count for 1859 : 96450 r1 bfs : 433 index count is 432
+2000
+3000
+4000
+error count for 79634 : 28798 r1 bfs : 1103 index count is 1102
+5000
+6000
+error count for 87424 : 75082 r1 bfs : 197 index count is 196
+7000
+8000
+error count for 84318 : 74277 r1 bfs : 360 index count is 359
+9000
+-----------------------------------------------------
+All done.
