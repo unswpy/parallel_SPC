@@ -671,10 +671,10 @@ void USPCIndex::BuildIndexParallel_vector(const Graph& const_graph, int num_thre
     //cL_temp.resize(n_);
     dL_temp.resize(n_);
     cL_temp.resize(n_);
-    dL_pre.resize(maxD);
-    cL_pre.resize(maxD);
+    dL_pre.resize(2);//dL_pre[0] indicate d-1 and dL_pre[1] indicate d
+    cL_pre.resize(2);
     //#pragma omp declare reduction(MyMerge: std::vector<LabelV>: omp_out.insert(omp_out.end(), omp_in.begin(), omp_in.end()))
-    for (int i = 0; i < maxD; i++)
+    for (int i = 0; i <= 1; i++)
     {
         dL_pre[i].resize(n_);
         cL_pre[i].resize(n_);
@@ -693,6 +693,8 @@ void USPCIndex::BuildIndexParallel_vector(const Graph& const_graph, int num_thre
         }
         for (int d = 1; d <= maxD; d++)
         {
+		swap(dL_pre[0], dL_pre[1]);
+		swap(cL_pre[0], cL_pre[1]);
        //     std::cout << d << " is the current d" << std::endl;
             bool earlyStop = false;
             if (d != 1)
@@ -700,7 +702,7 @@ void USPCIndex::BuildIndexParallel_vector(const Graph& const_graph, int num_thre
                 earlyStop = true;
                 for (size_t i = 0; i < n_; ++i)
                 {
-                    if ((!dL_pre[d - 1][i].empty()) || (!cL_pre[d - 1][i].empty()))
+                    if ((!dL_pre[0][i].empty()) || (!cL_pre[0][i].empty()))
                     {
                         earlyStop = false;
                         break;
@@ -864,11 +866,11 @@ void USPCIndex::BuildIndexParallel_vector(const Graph& const_graph, int num_thre
                         //if(rank_[w] <= rank_[u]) continue;
                         //else
                         {
-                            for (auto iter : dL_pre[d - 1][w])
+                            for (auto iter : dL_pre[0][w])
                             {
                                 inCands.push_back(LEMerge(LEExtractV(iter), LEExtractD(iter), LEExtractC(iter) * eqm_[w]));
                             }
-                            for (auto iter : cL_pre[d - 1][w])
+                            for (auto iter : cL_pre[0][w])
                             {
                                 inCands.push_back(LEMerge(LEExtractV(iter), LEExtractD(iter), LEExtractC(iter) * eqm_[w]));
                             }
@@ -1212,8 +1214,8 @@ void USPCIndex::BuildIndexParallel_vector(const Graph& const_graph, int num_thre
 
                     }
                 }
-                swap(dL_temp[i], dL_pre[d][u]);
-                swap(cL_temp[i], cL_pre[d][u]);
+                swap(dL_temp[i], dL_pre[1][u]);
+                swap(cL_temp[i], cL_pre[1][u]);
                 if (debug) std::cout << "end the sort cL" << std::endl;
             }
             const auto end1 = std::chrono::steady_clock::now();
