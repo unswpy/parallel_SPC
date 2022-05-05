@@ -693,6 +693,10 @@ void USPCIndex::BuildIndexParallel_vector(const Graph& const_graph, int num_thre
         }
         for (int d = 1; d <= maxD; d++)
         {
+		dL_pre[0].clear();
+		dL_pre[0].resize(n_);
+		cL_pre[0].clear();
+		cL_pre[0].resize(n_);	
 		swap(dL_pre[0], dL_pre[1]);
 		swap(cL_pre[0], cL_pre[1]);
             std::cout << d << " is the current d" << std::endl;
