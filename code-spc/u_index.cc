@@ -85,7 +85,8 @@ int main(int argc, char** argv) {
   spc.set_opt_local(opt_local);
   if(numThreads <= 0) numThreads = 1;
   printf("%d threads in total \n");
-  spc.BuildIndexParallel_vector(graph,numThreads);
+  spc.BuildIndexParallel(graph,numThreads);
+  //spc.BuildIndexParallel_vector(graph,numThreads);
   //spc.BuildIndex(graph);
   // timer stops
   const auto end = std::chrono::steady_clock::now();
