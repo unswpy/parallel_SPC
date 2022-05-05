@@ -695,7 +695,7 @@ void USPCIndex::BuildIndexParallel_vector(const Graph& const_graph, int num_thre
         {
 		swap(dL_pre[0], dL_pre[1]);
 		swap(cL_pre[0], cL_pre[1]);
-       //     std::cout << d << " is the current d" << std::endl;
+            std::cout << d << " is the current d" << std::endl;
             bool earlyStop = false;
             if (d != 1)
             {
