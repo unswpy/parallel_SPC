@@ -742,11 +742,14 @@ void USPCIndex::BuildIndexParallel_vector(const Graph& const_graph, int num_thre
             //#pragma omp parallel for schedule(dynamic, 1)
             for (int i = 0; i < n_; i++)
             {
+		if(i % 10000 == 0) std::cout << i << " is cur i" << d << " d " << std::endl;
                 const uint32_t u = order_[i];
                 const uint32_t o_mul = eqm_[u];
                 eqm_[u] = 1;
-                dL_temp[i].clear();
-                cL_temp[i].clear();
+		dL_pre[1][u].clear();
+		cL_pre[1][u].clear();                
+//dL_temp[i].clear();
+                //cL_temp[i].clear();
                 //for (size_t j = 0; j < inc; ++j) 
                   //size_t i = j + cur_i;
                   //std::cout << "id : " << i << std::endl;
@@ -820,7 +823,7 @@ void USPCIndex::BuildIndexParallel_vector(const Graph& const_graph, int num_thre
 
                                     }
                                 cL_[u].insert(cL_[u].begin()+low, LEMerge(w,1,eqm_[w]));*/
-                                cL_temp[i].push_back(LEMerge(w, 1, 1));
+                                cL_pre[1][u].push_back(LEMerge(w, 1, 1));
 
                                 // assume there is at most one edge between two nodes and the weight is always one
                             }
@@ -845,7 +848,7 @@ void USPCIndex::BuildIndexParallel_vector(const Graph& const_graph, int num_thre
                                 //if(high < 0) high = 0;
                                 if(debug) std::cout << u << " : " << " insert " << low << " : "  << w << std::endl;
                                 dL_[u].insert(dL_[u].begin() + low, LEMerge(w,1,eqm_[w]));*/
-                                dL_temp[i].push_back(LEMerge(w, 1, 1));
+                                dL_pre[1][u].push_back(LEMerge(w, 1, 1));
                                 // assume there is at most one edge between two nodes and the weight is always one
                             }
                         }
@@ -872,10 +875,12 @@ void USPCIndex::BuildIndexParallel_vector(const Graph& const_graph, int num_thre
                         {
                             for (auto iter : dL_pre[0][w])
                             {
+				if(rank_[LEExtractV(iter)] >= rank_[u]) continue;
                                 inCands.push_back(LEMerge(LEExtractV(iter), LEExtractD(iter), LEExtractC(iter) * eqm_[w]));
                             }
                             for (auto iter : cL_pre[0][w])
                             {
+				if(rank_[LEExtractV(iter)] >= rank_[u]) continue;
                                 inCands.push_back(LEMerge(LEExtractV(iter), LEExtractD(iter), LEExtractC(iter) * eqm_[w]));
                             }
                         }
@@ -970,7 +975,7 @@ void USPCIndex::BuildIndexParallel_vector(const Graph& const_graph, int num_thre
 
                             if (tempD == 0)//== d)
                             {
-                                cL_temp[i].push_back(LEMerge(vt, d, ct));
+                                cL_pre[1][u].push_back(LEMerge(vt, d, ct));
                                 int r = rank_[vt];
                                 if (r < LMnum)
                                 {
@@ -979,7 +984,7 @@ void USPCIndex::BuildIndexParallel_vector(const Graph& const_graph, int num_thre
                             }
                             else if (tempD == -1) //> d)
                             {
-                                dL_temp[i].push_back(LEMerge(vt, d, ct));
+                                dL_pre[1][u].push_back(LEMerge(vt, d, ct));
                                 int r = rank_[vt];
                                 if (r < LMnum)
                                 {
@@ -991,9 +996,10 @@ void USPCIndex::BuildIndexParallel_vector(const Graph& const_graph, int num_thre
                             auto iter = inCands[vi];
                             uint32_t vt = LEExtractV(iter);
                             uint32_t ct = LEExtractC(iter);
-                            dL_temp[i].push_back(LEMerge(vt, d, ct));
+                            dL_pre[1][u].push_back(LEMerge(vt, d, ct));
                         }
                     }
+		    inCands.clear();
                     /*for (int vi = 0; vi < num_threads; vi++)//auto iter : inCands)
                     {
                         cL_temp[i].insert(cL_temp[i].end(),cL_t[vi].begin(), cL_t[vi].end());
@@ -1068,39 +1074,39 @@ void USPCIndex::BuildIndexParallel_vector(const Graph& const_graph, int num_thre
                  }*/
                  //for (const auto e : dL_[u]) dLu[LEExtractV(e)] = UINT32_MAX;
                 if (debug) std::cout << "enter the sort" << std::endl;
-                sort(dL_temp[i].begin(), dL_temp[i].end());
+                sort(dL_pre[1][u].begin(), dL_pre[1][u].end());
                 std::vector<LabelEntry> ansd;
                 int ansdI = 0;
                 if (debug) std::cout << u << " is the current vertex " << std::endl;
                 //#pragma omp parallel for
-                for (int vi = 0; vi < dL_temp[i].size(); vi++)
+                for (int vi = 0; vi < dL_pre[1][u].size(); vi++)
                 {
-                    uint32_t v1 = LEExtractV(dL_temp[i][vi]);
+                    uint32_t v1 = LEExtractV(dL_pre[1][u][vi]);
                     if (debug) std::cout << "v ==" << v1 << std::endl;
                     if (vi == 0)
                     {
-                        ansd.push_back(dL_temp[i][vi]);
+                        ansd.push_back(dL_pre[1][u][vi]);
                     }
                     else {
                         uint32_t v2 = LEExtractV(ansd[ansdI]);
                         if (v1 != v2)
                         {
-                            ansd.push_back(dL_temp[i][vi]);
+                            ansd.push_back(dL_pre[1][u][vi]);
                             ansdI++;
                         }
                         else
                         {
                             uint32_t d1 = LEExtractD(ansd[ansdI]);
-                            uint32_t d2 = LEExtractD(dL_temp[i][vi]);
+                            uint32_t d2 = LEExtractD(dL_pre[1][u][vi]);
                             uint32_t c1 = LEExtractC(ansd[ansdI]);
-                            uint32_t c2 = LEExtractC(dL_temp[i][vi]);
+                            uint32_t c2 = LEExtractC(dL_pre[1][u][vi]);
                             if (d2 > d1) continue;
                             else if (d2 < d1)
                             {
                                 ansd[ansdI] = LEMerge(v1, d2, c2);
                             }
                             else {
-                                c1 += LEExtractC(dL_temp[i][vi]);
+                                c1 += LEExtractC(dL_pre[1][u][vi]);
                                 ansd[ansdI] = LEMerge(v1, d1, c1);
                             }
                         }
@@ -1108,41 +1114,42 @@ void USPCIndex::BuildIndexParallel_vector(const Graph& const_graph, int num_thre
                     }
 
                 }
-                swap(dL_temp[i], ansd);
+                swap(dL_pre[1][u], ansd);
                 ansd.clear();
 
                 //remove duplicate elements
                 if (debug) std::cout << "enter the sort cL" << std::endl;
-                sort(cL_temp[i].begin(), cL_temp[i].end());
+                sort(cL_pre[1][u].begin(), cL_pre[1][u].end());
                 std::vector<LabelEntry> ans;
                 int ansI = 0;
                 //#pragma omp parallel for
-                for (int vi = 0; vi < cL_temp[i].size(); vi++)
+                for (int vi = 0; vi < cL_pre[1][u].size(); vi++)
                 {
                     if (vi == 0)
                     {
-                        ans.push_back(cL_temp[i][vi]);
+                        ans.push_back(cL_pre[1][u][vi]);
                     }
                     else {
-                        uint32_t v1 = LEExtractV(cL_temp[i][vi]);
+                        uint32_t v1 = LEExtractV(cL_pre[1][u][vi]);
                         uint32_t v2 = LEExtractV(ans[ansI]);
                         if (v1 != v2)
                         {
-                            ans.push_back(cL_temp[i][vi]);
+                            ans.push_back(cL_pre[1][u][vi]);
                             ansI++;
                         }
                         else
                         {
                             uint32_t d1 = LEExtractD(ans[ansI]);
                             uint32_t c1 = LEExtractC(ans[ansI]);
-                            c1 += LEExtractC(cL_temp[i][vi]);
+                            c1 += LEExtractC(cL_pre[1][u][vi]);
                             ans[ansI] = LEMerge(v1, d1, c1);
                         }
 
                     }
 
                 }
-                swap(cL_temp[i], ans);
+                swap(cL_pre[1][u], ans);
+		ans.clear();
                 if (!local_[u])
                 {
                     for (const auto e : dL_[u])
@@ -1152,21 +1159,23 @@ void USPCIndex::BuildIndexParallel_vector(const Graph& const_graph, int num_thre
                     }
                 }
                 eqm_[u] = o_mul;
-            }
+            // right bracket here
 
 
 
             const auto start1 = std::chrono::steady_clock::now();
             //#pragma omp barrier
-#pragma omp parallel for schedule(dynamic, 1)
-            for (int i = 0; i < n_; i++)
-            {
-                const uint32_t u = order_[i];
+            //#pragma omp parallel for schedule(dynamic, 1)
+            //for (int i = 0; i < n_; i++)
+	    {
+            //left bracket here
+                //const uint32_t u = order_[i];
+            //    u = order_[i];
 
                 if (debug) std::cout << "enter the insert dL" << std::endl;
                 if (!local_[u])
                 {
-                    for (auto e : dL_temp[i])
+                    for (auto e : dL_pre[1][u])
                     {
                         if (debug) std::cout << "dL_temp v d c " << LEExtractV(e) << " \t " << LEExtractD(e) << "\t" << LEExtractC(e) << std::endl;
                         int tv = LEExtractV(e);
@@ -1192,7 +1201,7 @@ void USPCIndex::BuildIndexParallel_vector(const Graph& const_graph, int num_thre
                         dL_[u].insert(dL_[u].begin() + low, e);
 
                     }
-                    for (auto e : cL_temp[i])
+                    for (auto e : cL_pre[1][u])
                     {
                         int tv = LEExtractV(e);
                         int low = 0;
@@ -1218,13 +1227,17 @@ void USPCIndex::BuildIndexParallel_vector(const Graph& const_graph, int num_thre
 
                     }
                 }
-                swap(dL_temp[i], dL_pre[1][u]);
-                swap(cL_temp[i], cL_pre[1][u]);
+                //swap(dL_temp[i], dL_pre[1][u]);
+                //swap(cL_temp[i], cL_pre[1][u]);
                 if (debug) std::cout << "end the sort cL" << std::endl;
-            }
-            const auto end1 = std::chrono::steady_clock::now();
+		//dL_temp[i].clear();
+                //cL_temp[i].clear();
+             const auto end1 = std::chrono::steady_clock::now();
             dif += end1 - start1;
-        }
+           
+	    }
+           }
+          } 
         if (hybrid)cur_i += inc;
     }
 
