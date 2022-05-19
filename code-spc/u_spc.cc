@@ -742,7 +742,7 @@ void USPCIndex::BuildIndexParallel_vector(const Graph& const_graph, int num_thre
             //#pragma omp parallel for schedule(dynamic, 1)
             for (int i = 0; i < n_; i++)
             {
-		if(i % 10000 == 0) std::cout << i << " is cur i" << d << " d " << std::endl;
+		//if(i % 10000 == 0) std::cout << i << " is cur i" << d << " d " << std::endl;
                 const uint32_t u = order_[i];
                 const uint32_t o_mul = eqm_[u];
                 eqm_[u] = 1;
@@ -2363,6 +2363,55 @@ void USPCIndex::DegreeOrder(const Graph& graph) {
             });
 }
 
+void USPCIndex::HybridOrder(const Graph& graph) {
+  std::cout << "hybird-based ordering" << std::endl;
+  std::vector<uint32_t> deg(n_);
+  long long totalDeg = 0;
+  for (uint32_t i = 0; i < n_; ++i) {
+    deg[i] = graph[i].size();
+    totalDeg += deg[i];
+    order_[i] = i;
+  }
+  
+  uint32_t threshold = totalDeg / n_ / 2;
+  std::cout << threshold << " is the threshold" << std::endl;
+  std::sort(order_.begin(), order_.end(),
+            [&deg](const uint32_t v1, const uint32_t v2) {
+              return deg[v1] < deg[v2];
+         });
+  
+  //reverse(order_.begin(), order_.end());
+
+  uint32_t i = 0;
+   for(; i < n_; i++){
+   if(i % 10000 == 0){
+        std::cout << i << "for the hybrid" << std::endl;
+    }
+    std::partial_sort(order_.begin()+i, order_.begin()+i + 1, order_.end(),
+        [&deg](const uint32_t v1, const uint32_t v2) {
+        return deg[v1] < deg[v2];
+        });
+    uint32_t v = order_[i];
+    if(deg[v] > threshold){
+        break;
+    }
+    for(uint32_t j = 0; j < graph[v].size(); j++){
+        deg[graph[v][j]] += graph[v].size()-1; 
+    }
+  }
+//  std::sort(order_.begin() + i, order_.end(),
+//            [&deg](const uint32_t v1, const uint32_t v2) {
+//              return deg[v1] < deg[v2];
+//         });
+ 
+
+  reverse(order_.begin(), order_.end());
+  std::cout << " hybrid-based ordering finished" << std::endl;
+  //std::sort(order_.begin(), order_.end(),
+  //          [&deg](const uint32_t v1, const uint32_t v2) {
+  //            return deg[v1] > deg[v2];
+  //          });
+}
 /*
 void USPCIndex::DegenOrder(const Graph& graph) {
   ASSERT(false);

@@ -49,6 +49,7 @@ class USPCIndex final: private USPC {
   enum class OrderScheme {
     kDegree,   // degree-based ordering
     kSigPath,  // significant-path-based ordering
+    Hybrid, // hybrid ordering
     kInvalid
   };
   // ctors
@@ -80,6 +81,7 @@ class USPCIndex final: private USPC {
   void SigPathIndex();
   // ordering functions
   void DegreeOrder(const Graph& graph);
+  void HybridOrder(const Graph& graph);
   // void DegenOrder(const Graph& graph);
   // void RevDegenOrder(const Graph& graph);
   // void GreedyOrder(const Graph& graph);
@@ -88,6 +90,7 @@ class USPCIndex final: private USPC {
   }
   std::map<OrderScheme, void (USPCIndex::*)(const Graph&)> of_ = {
     {OrderScheme::kDegree,  &USPCIndex::DegreeOrder},
+    {OrderScheme::Hybrid,  &USPCIndex::HybridOrder},
     {OrderScheme::kInvalid, &USPCIndex::InvalidOrder}
   };
   OrderScheme os_ = OrderScheme::kInvalid;

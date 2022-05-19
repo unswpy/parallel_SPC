@@ -43,7 +43,10 @@ int main(int argc, char** argv) {
             os = spc::USPCIndex::OrderScheme::kDegree;
           } else if ("sigpath" == osname) {
             os = spc::USPCIndex::OrderScheme::kSigPath;
-          } else {
+          } else if("hybrid" == osname){
+            os = spc::USPCIndex::OrderScheme::Hybrid;
+           }
+           else{
             os = spc::USPCIndex::OrderScheme::kInvalid;
           }
           break;
