@@ -24,13 +24,15 @@ namespace spc {
 void USPCQuery::ValidWithBfsQueries(int nq, std::vector<std::vector<int>>& adj, bool newCount)//nq is the number of queries
 {
     std::cout << "enter the valid bfs queries function" << std::endl;
+
+    #pragma omp parallel for schedule(dynamic, 1)
     for(int i = 0; i < nq; i++)
     {
        if(i % 1000 == 0) 
        std::cout << i << std::endl;
        uint32_t s = rand() % n_;
        uint32_t t = rand() % n_;
-       std::pair<int, uint32_t> r1 = SpcBfs(adj, s, t);
+       //std::pair<int, uint32_t> r1 = SpcBfs(adj, s, t);
        //std::cout << "end of spc bfs function" << std::endl;
        //uint32_t r2 = Count(s, t);
        uint32_t r2 = 0;
@@ -42,9 +44,9 @@ void USPCQuery::ValidWithBfsQueries(int nq, std::vector<std::vector<int>>& adj, 
        {
            r2 = Count(s, t);
        }
-       if(r1.second != r2)
+       //if(r1.second != r2)
        {
-           std::cout << "error count for " << s << " : " << t << " r1 bfs : " << r1.second << " index count is " << r2 << std::endl;
+        //   std::cout << "error count for " << s << " : " << t << " r1 bfs : " << r1.second << " index count is " << r2 << std::endl;
        }
     }
 }

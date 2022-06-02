@@ -63,9 +63,15 @@ int main(int argc, char** argv) {
      lv = v;
   }
   in.close();
-  uspc.ValidWithBfsQueries(10000, adj, false);
+  int Nquery = 10000;
+  const auto beg1 = std::chrono::steady_clock::now();
+  uspc.ValidWithBfsQueries(Nquery, adj, false);
 
-
+  const auto end1 = std::chrono::steady_clock::now();
+  const auto dif1 = end1 - beg1;
+  printf("our query costs %f micro seconds in average\n",
+         std::chrono::duration<double, std::micro>(dif1).count() / Nquery);
+  
   // read queries
   FILE* file = fopen(qfilename.c_str(), "r");
   uint32_t num_queries = 0;
