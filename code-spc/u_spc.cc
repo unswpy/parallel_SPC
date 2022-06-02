@@ -1159,18 +1159,19 @@ void USPCIndex::BuildIndexParallel_vector(const Graph& const_graph, int num_thre
                     }
                 }
                 eqm_[u] = o_mul;
+	    }
             // right bracket here
 
 
 
             const auto start1 = std::chrono::steady_clock::now();
-            //#pragma omp barrier
-            //#pragma omp parallel for schedule(dynamic, 1)
-            //for (int i = 0; i < n_; i++)
+            #pragma omp barrier
+            #pragma omp parallel for schedule(dynamic, 1)
+            for (int i = 0; i < n_; i++)
 	    {
             //left bracket here
-                //const uint32_t u = order_[i];
-            //    u = order_[i];
+                const uint32_t u = order_[i];
+                //u = order_[i];
 
                 if (debug) std::cout << "enter the insert dL" << std::endl;
                 if (!local_[u])
@@ -1236,7 +1237,7 @@ void USPCIndex::BuildIndexParallel_vector(const Graph& const_graph, int num_thre
             dif += end1 - start1;
            
 	    }
-           }
+           
           } 
         if (hybrid)cur_i += inc;
     }
